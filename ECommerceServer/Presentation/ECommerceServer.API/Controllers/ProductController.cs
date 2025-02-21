@@ -20,14 +20,17 @@ namespace ECommerceServer.API.Controllers
         [HttpGet]
         public async Task Get()
         {
-            await _productWriteRepository.AddRangeAsync(new()
-            {
-                new() { Id = Guid.NewGuid(), Name = "Product 1", Price = 100, CreatedDate = DateTime.UtcNow, Stock = 10 },
-                new() { Id = Guid.NewGuid(), Name = "Product 2", Price = 200, CreatedDate = DateTime.UtcNow, Stock = 20 },
-                new() { Id = Guid.NewGuid(), Name = "Product 3", Price = 300, CreatedDate = DateTime.UtcNow, Stock = 30 }
-            });
+            //await _productWriteRepository.AddRangeAsync(new()
+            //{
+            //    new() { Id = Guid.NewGuid(), Name = "Product 1", Price = 100, CreatedDate = DateTime.UtcNow, Stock = 10 },
+            //    new() { Id = Guid.NewGuid(), Name = "Product 2", Price = 200, CreatedDate = DateTime.UtcNow, Stock = 20 },
+            //    new() { Id = Guid.NewGuid(), Name = "Product 3", Price = 300, CreatedDate = DateTime.UtcNow, Stock = 30 }
+            //});
 
-            await _productWriteRepository.SaveAsync();
+            Product product = await _productReadRepository.GetByIdAsync("e52f5b35-3747-4a5a-802a-20d87c8079a8", false);
+            product.Name = "Değiştirilen Product";
+
+            await _productWriteRepository.SaveAsync(); // Burada scoped olmasından dolayı "_productReadRepository" ile çektiğimiz bir ürünü "_productWriteRepository" ile kaydetme işlemi yapabiliyoruz.
         }
 
         [HttpGet("{id}")]
