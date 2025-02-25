@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ECommerceServer.Domain.Entities;
 using ECommerceServer.Domain.Entities.Common;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace ECommerceServer.Persistence.Contexts
 {
@@ -28,11 +30,14 @@ namespace ECommerceServer.Persistence.Contexts
 
             foreach (var data in datas)
             {
-                _ = data.State switch
+                if (data.State == EntityState.Added)
                 {
-                    EntityState.Added => data.Entity.CreatedDate = DateTime.UtcNow,
-                    EntityState.Modified => data.Entity.UpdatedDate = DateTime.UtcNow
-                };
+                    data.Entity.CreatedDate = DateTime.UtcNow;
+                }
+                else if (data.State == EntityState.Modified)
+                {
+                    data.Entity.UpdatedDate = DateTime.UtcNow;
+                }
             }
 
             return base.SaveChangesAsync(cancellationToken);
