@@ -35,14 +35,16 @@ namespace ECommerceServer.API.Controllers
         }
 
         [HttpGet("create")]
-        public async Task Get()
+        public async Task<IActionResult> Get()
         {
-            var customerId = Guid.NewGuid();
-            await _customerWriteRepository.AddAsync(new() { Id = customerId, Name = "Enes" });
+            //var customerId = Guid.NewGuid();
+            //await _customerWriteRepository.AddAsync(new() { Id = customerId, Name = "Enes" });
 
-            await _orderWriteRepository.AddAsync(new() { Description = "Açıklama 1", Address = "Çankaya, Ankara", CustomerId = customerId });
-            await _orderWriteRepository.AddAsync(new() { Description = "Açıklama 2", Address = "Keçiören, Ankara", CustomerId = customerId });
-            await _orderWriteRepository.SaveAsync();
+            //await _orderWriteRepository.AddAsync(new() { Description = "Açıklama 1", Address = "Çankaya, Ankara", CustomerId = customerId });
+            //await _orderWriteRepository.AddAsync(new() { Description = "Açıklama 2", Address = "Keçiören, Ankara", CustomerId = customerId });
+            //await _orderWriteRepository.SaveAsync();
+
+            return Ok("Merhaba");
         }
 
         [HttpPut("update")]
