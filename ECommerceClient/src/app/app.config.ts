@@ -8,6 +8,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { provideToastr } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,6 +18,8 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideAnimations(),
     provideToastr(),
-    importProvidersFrom(NgxSpinnerModule.forRoot())
+    importProvidersFrom(NgxSpinnerModule.forRoot()),
+    provideHttpClient(withFetch()),
+    { provide: "baseUrl", useValue: "https://localhost:7175/api", multi: true }
   ]
 };

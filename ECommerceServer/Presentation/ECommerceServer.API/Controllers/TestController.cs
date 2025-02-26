@@ -1,4 +1,6 @@
-﻿using ECommerceServer.Application.Repositories;
+﻿using System.Net;
+using ECommerceServer.Application.Repositories;
+using ECommerceServer.Application.ViewModels.Products;
 using ECommerceServer.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,47 +14,56 @@ namespace ECommerceServer.API.Controllers
         readonly private IProductReadRepository _productReadRepository;
         readonly private IProductWriteRepository _productWriteRepository;
 
-        readonly private IOrderReadRepository _orderReadRepository;
-        readonly private IOrderWriteRepository _orderWriteRepository;
-
-        readonly private ICustomerReadRepository _customerReadRepository;
-        readonly private ICustomerWriteRepository _customerWriteRepository;
-
         public TestController(
             IProductReadRepository productReadRepository, 
-            IProductWriteRepository productWriteRepository, 
-            IOrderReadRepository orderReadRepository, 
-            IOrderWriteRepository orderWriteRepository, 
-            ICustomerReadRepository customerReadRepository, 
-            ICustomerWriteRepository customerWriteRepository)
+            IProductWriteRepository productWriteRepository)
         {
             _productReadRepository = productReadRepository;
             _productWriteRepository = productWriteRepository;
-            _orderReadRepository = orderReadRepository;
-            _orderWriteRepository = orderWriteRepository;
-            _customerReadRepository = customerReadRepository;
-            _customerWriteRepository = customerWriteRepository;
         }
 
-        [HttpGet("create")]
+        [HttpGet]
         public async Task<IActionResult> Get()
         {
-            //var customerId = Guid.NewGuid();
-            //await _customerWriteRepository.AddAsync(new() { Id = customerId, Name = "Enes" });
-
-            //await _orderWriteRepository.AddAsync(new() { Description = "Açıklama 1", Address = "Çankaya, Ankara", CustomerId = customerId });
-            //await _orderWriteRepository.AddAsync(new() { Description = "Açıklama 2", Address = "Keçiören, Ankara", CustomerId = customerId });
-            //await _orderWriteRepository.SaveAsync();
-
-            return Ok("Merhaba");
+            return Ok(_productReadRepository.GetAll(false));
         }
 
-        [HttpPut("update")]
-        public async Task Update()
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(string id)
         {
-            Order order = await _orderReadRepository.GetByIdAsync("39B046D1-3029-413A-B48F-08DD525D8FD3");
-            order.Address = "Beşiktaş, İstanbul";
-            await _orderWriteRepository.SaveAsync();
+            return Ok(_productReadRepository.GetByIdAsync(id, false));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(VM_Create_Product model)
+        {
+            await _productWriteRepository.AddAsync(new()
+            {
+                Name = model.Name,
+                Price = model.Price,
+                Stock = model.Stock,
+            });
+            await _productWriteRepository.SaveAsync();
+            return Ok((int)HttpStatusCode.Created);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(VM_Update_Product model)
+        {
+            Product product = await _productReadRepository.GetByIdAsync(model.Id);
+            product.Name = model.Name;
+            product.Price = model.Price;
+            product.Stock = model.Stock;
+            await _productWriteRepository.SaveAsync();
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            await _productWriteRepository.RemoveAsync(id);
+            await _productWriteRepository.SaveAsync();
+            return Ok();
         }
     }
 }

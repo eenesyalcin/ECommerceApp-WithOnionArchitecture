@@ -12,10 +12,6 @@ declare var $: any;
 export class AppComponent implements OnInit{
   title = 'ECommerceClient';
 
-  ngOnInit(): void {
-    $.get("https://localhost:7175/api/Test/create", data => {
-      console.log(data);
-    });
-  }
+  ngOnInit(): void {}
 
 }

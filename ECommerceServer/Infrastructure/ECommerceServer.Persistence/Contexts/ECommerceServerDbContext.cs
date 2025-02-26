@@ -22,7 +22,7 @@ namespace ECommerceServer.Persistence.Contexts
         public DbSet<Order> Orders { get; set; }
         public DbSet<Customer> Customers { get; set; }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             // Change Tracker: Entity'ler üzerinden yapılan değişikliklerin ya da eklenen verilerin yakalanmasını sağlayan property'dir. Update operasyonlarında Track edilen verileri yakalyıp elde etmemizi sağlar.
 
@@ -30,17 +30,15 @@ namespace ECommerceServer.Persistence.Contexts
 
             foreach (var data in datas)
             {
-                if (data.State == EntityState.Added)
+                _ = data.State switch
                 {
-                    data.Entity.CreatedDate = DateTime.UtcNow;
-                }
-                else if (data.State == EntityState.Modified)
-                {
-                    data.Entity.UpdatedDate = DateTime.UtcNow;
-                }
+                    EntityState.Added => data.Entity.CreatedDate = DateTime.UtcNow,
+                    EntityState.Modified => data.Entity.UpdatedDate = DateTime.UtcNow,
+                    _ => DateTime.UtcNow
+                };
             }
 
-            return base.SaveChangesAsync(cancellationToken);
+            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }
