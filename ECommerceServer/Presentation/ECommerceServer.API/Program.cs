@@ -1,5 +1,9 @@
 ﻿
+using ECommerceServer.Application.Validators.Products;
+using ECommerceServer.Infrastructure.Filters;
 using ECommerceServer.Persistence;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 namespace ECommerceServer.API
 {
@@ -20,7 +24,23 @@ namespace ECommerceServer.API
                         .AllowAnyHeader()  // ✅ Her türlü HTTP başlığına (headers) izin veriyoruz.
                         .AllowCredentials());  // ✅ Kimlik doğrulama (Authentication) destekliyoruz.
             });
-            builder.Services.AddControllers();
+
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<ValidationFilter>(); // Validation filter'ı ekle
+            })
+            .ConfigureApiBehaviorOptions(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true; // ModelState doğrulama hatalarını otomatik olarak döndürmesini engelle
+            });
+
+            // FluentValidation güncellenmiş versiyon
+            builder.Services.AddValidatorsFromAssemblyContaining<CreateProductValidator>();
+
+            builder.Services.AddFluentValidationAutoValidation()
+                            .AddFluentValidationClientsideAdapters();
+
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
