@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { CreateProduct } from '../../../../contracts/create-product';
-import { CreateProductService } from '../../../../services/common/models/create-product.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BaseComponent, SpinnerType } from '../../../../base/base.component';
 import { AlertifyMessageType, AlertifyPosition, AlertifyService } from '../../../../services/admin/alertify.service';
+import { ProductService } from '../../../../services/common/models/product.service';
 
 @Component({
   selector: 'app-create',
@@ -15,9 +15,11 @@ import { AlertifyMessageType, AlertifyPosition, AlertifyService } from '../../..
   styleUrl: './create.component.scss'
 })
 export class CreateComponent extends BaseComponent {
+  
+  @Output() createdProduct:  EventEmitter<CreateProduct> = new EventEmitter();
 
   constructor(
-    private createProductService: CreateProductService,
+    private createProductService: ProductService,
     private alertify: AlertifyService,
     spinner: NgxSpinnerService,
   ) {
@@ -81,6 +83,7 @@ export class CreateComponent extends BaseComponent {
         messageType: AlertifyMessageType.Success,
         position: AlertifyPosition.TopRight
       });
+      this.createdProduct.emit(createProductObject);
     }, errorMessage => {
       this.alertify.alertifyMessage(errorMessage, {
         dismissOther: true,
