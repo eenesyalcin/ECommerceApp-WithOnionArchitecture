@@ -2,3 +2,16 @@ table {
     width: 100%;
   }
   
+
+  .mat-column-update, .mat-column-delete {
+    text-align: center; /* Yazıları ve içeriği yatay olarak ortalar */
+  }
+  
+  .mat-column-update td, .mat-column-delete td {
+    display: flex;
+    justify-content: center; /* İçeriği yatayda ortalar */
+    align-items: center; /* İçeriği dikeyde ortalar */
+    height: 100%; /* Yüksekliği tam kaplasın */
+  }
+  
+  
