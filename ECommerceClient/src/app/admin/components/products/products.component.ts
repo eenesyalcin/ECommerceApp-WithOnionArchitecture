@@ -5,10 +5,11 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import { CreateComponent } from './create/create.component';
 import { ListComponent } from './list/list.component';
 import { CreateProduct } from '../../../contracts/create-product';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-products',
-  imports: [MatSidenavModule, CreateComponent, ListComponent],
+  imports: [MatSidenavModule, CreateComponent, ListComponent, MatDialogModule],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss'
 })
