@@ -7,16 +7,24 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { BaseComponent, SpinnerType } from '../../../../base/base.component';
 import { AlertifyMessageType, AlertifyPosition, AlertifyService } from '../../../../services/admin/alertify.service';
 import { ProductService } from '../../../../services/common/models/product.service';
+import { FileUploadComponent, FileUploadOptions } from '../../../../services/common/file-upload/file-upload.component';
 
 @Component({
   selector: 'app-create',
-  imports: [MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [MatFormFieldModule, MatInputModule, MatButtonModule, FileUploadComponent],
   templateUrl: './create.component.html',
   styleUrl: './create.component.scss'
 })
 export class CreateComponent extends BaseComponent {
   
   @Output() createdProduct:  EventEmitter<CreateProduct> = new EventEmitter();
+  @Output() fileUploadOptions: Partial<FileUploadOptions> = {
+    action: "upload",
+    controller: "Test",
+    explanation: "Resimleri sürükleyin veya seçiniz...",
+    isAdminPage: true,
+    accept: ".png, .jpg, .jpeg, .json"
+  };
 
   constructor(
     private createProductService: ProductService,

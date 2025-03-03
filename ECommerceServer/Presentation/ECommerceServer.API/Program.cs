@@ -54,6 +54,7 @@ namespace ECommerceServer.API
                 app.UseSwaggerUI();
             }
 
+            app.UseStaticFiles();
             app.UseCors("AllowAll");
             app.UseHttpsRedirection();
 
