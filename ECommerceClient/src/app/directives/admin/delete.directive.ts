@@ -2,10 +2,11 @@ import { Directive, ElementRef, EventEmitter, HostListener, inject, Input, Outpu
 import { NgxSpinnerService } from 'ngx-spinner';
 import { SpinnerType } from '../../base/base.component';
 import { MatDialog } from '@angular/material/dialog';
-import { DeleteDialogComponent, DeleteState } from '../../dialogs/delete-dialog/delete-dialog.component';
 import { HttpClientService } from '../../services/common/http-client.service';
 import { AlertifyMessageType, AlertifyPosition, AlertifyService } from '../../services/admin/alertify.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { OpenDialogService } from '../../services/common/open-dialog.service';
+import { DeleteDialogComponent, DeleteState } from '../../dialogs/delete-dialog/delete-dialog.component';
 
 declare var $: any
 
@@ -25,7 +26,8 @@ export class DeleteDirective {
     private _renderer: Renderer2,
     private httpClientService: HttpClientService,
     private spinner: NgxSpinnerService,
-    private alertify: AlertifyService
+    private alertify: AlertifyService,
+    private openDialogService: OpenDialogService
   ) {
     // Daha önce eklenmiş bir resim olup olmadığını kontrol et
     if (this.element.nativeElement.querySelector("img.delete-icon")) {
@@ -49,48 +51,59 @@ export class DeleteDirective {
     });
   }
 
+  isDialogOpen = false; // Dialog'un açık olup olmadığını takip etmek için flag ekledik
+
   @HostListener("click")
   async onClick() {
-    this.openDialog(async () => {
-      this.spinner.show(SpinnerType.BallAtom);
-      const td: HTMLTableCellElement = this.element.nativeElement;
-      this.httpClientService.delete({
-        controller: this.controller
-      }, this.id).subscribe(data => {
-        $(td.parentElement).animate({
-          opacity: 0,
-          left: "+=50",
-          height: "toggle"
-        }, 700, () => {
-          this.callBack.emit();
-          this.alertify.alertifyMessage("Ürün başarıyla silinmiştir.", {
+    if (this.isDialogOpen) return; // Eğer dialog zaten açıksa, ikinci defa açma!
+    this.isDialogOpen = true;
+
+    this.openDialogService.openDialog({
+      componentType: DeleteDialogComponent,
+      data: DeleteState.Yes,
+      afterClosed: async () => {
+        this.isDialogOpen = false; // Dialog kapandığında flag'i sıfırla
+        this.spinner.show(SpinnerType.BallAtom);
+        const td: HTMLTableCellElement = this.element.nativeElement;
+        this.httpClientService.delete({
+          controller: this.controller
+        }, this.id).subscribe(data => {
+          $(td.parentElement).animate({
+            opacity: 0,
+            left: "+=50",
+            height: "toggle"
+          }, 700, () => {
+            this.callBack.emit();
+            this.alertify.alertifyMessage("Ürün başarıyla silinmiştir.", {
+              dismissOther: true,
+              messageType: AlertifyMessageType.Success,
+              position: AlertifyPosition.TopRight
+            });
+          });
+        }, (errorResponse: HttpErrorResponse) => {
+          this.spinner.hide(SpinnerType.BallAtom);
+          this.alertify.alertifyMessage("Ürün silinirken beklenmeyen bir hata ile karşılaşıldı!", {
             dismissOther: true,
-            messageType: AlertifyMessageType.Success,
+            messageType: AlertifyMessageType.Error,
             position: AlertifyPosition.TopRight
           });
         });
-      }, (errorResponse: HttpErrorResponse) => {
-        this.spinner.hide(SpinnerType.BallAtom);
-        this.alertify.alertifyMessage("Ürün silinirken beklenmeyen bir hata ile karşılaşıldı!", {
-          dismissOther: true,
-          messageType: AlertifyMessageType.Error,
-          position: AlertifyPosition.TopRight
-        })
-      }); 
-    });
-  }
-
-  openDialog(afterClosed: any): void {
-    const dialogRef = this.dialog.open(DeleteDialogComponent, {
-      width: '250px',
-      data: DeleteState.Yes,
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result == DeleteState.Yes) {
-        afterClosed();
       }
     });
   }
+
+
+  // openDialog(afterClosed: any): void {
+  //   const dialogRef = this.dialog.open(DeleteDialogComponent, {
+  //     width: '250px',
+  //     data: DeleteState.Yes,
+  //   });
+
+  //   dialogRef.afterClosed().subscribe(result => {
+  //     if (result == DeleteState.Yes) {
+  //       afterClosed();
+  //     }
+  //   });
+  // }
 
 }
