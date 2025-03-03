@@ -1,5 +1,6 @@
 ﻿
 using ECommerceServer.Application.Validators.Products;
+using ECommerceServer.Infrastructure;
 using ECommerceServer.Infrastructure.Filters;
 using ECommerceServer.Persistence;
 using FluentValidation;
@@ -15,6 +16,7 @@ namespace ECommerceServer.API
 
             // Add services to the container.
             builder.Services.AddPersistanceServices();
+            builder.Services.AddInfrastructureServices();
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",
