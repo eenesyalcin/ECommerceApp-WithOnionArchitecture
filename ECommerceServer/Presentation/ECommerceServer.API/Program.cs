@@ -2,6 +2,7 @@
 using ECommerceServer.Application.Validators.Products;
 using ECommerceServer.Infrastructure;
 using ECommerceServer.Infrastructure.Filters;
+using ECommerceServer.Infrastructure.Services.Storage.Azure;
 using ECommerceServer.Infrastructure.Services.Storage.Local;
 using ECommerceServer.Persistence;
 using FluentValidation;
@@ -20,7 +21,8 @@ namespace ECommerceServer.API
             builder.Services.AddInfrastructureServices();
 
             //builder.Services.AddStorage(StorageType.Azure);
-            builder.Services.AddStorage<LocalStorage>();
+            //builder.Services.AddStorage<LocalStorage>();
+            builder.Services.AddStorage<AzureStorage>();
 
             builder.Services.AddCors(options =>
             {
