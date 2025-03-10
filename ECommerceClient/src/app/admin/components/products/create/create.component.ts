@@ -11,20 +11,13 @@ import { FileUploadComponent, FileUploadOptions } from '../../../../services/com
 
 @Component({
   selector: 'app-create',
-  imports: [MatFormFieldModule, MatInputModule, MatButtonModule, FileUploadComponent],
+  imports: [MatFormFieldModule, MatInputModule, MatButtonModule],
   templateUrl: './create.component.html',
   styleUrl: './create.component.scss'
 })
 export class CreateComponent extends BaseComponent {
   
   @Output() createdProduct:  EventEmitter<CreateProduct> = new EventEmitter();
-  @Output() fileUploadOptions: Partial<FileUploadOptions> = {
-    action: "upload",
-    controller: "Test",
-    explanation: "Resimleri sürükleyin veya seçiniz...",
-    isAdminPage: true,
-    accept: ".png, .jpg, .jpeg, .json"
-  };
 
   constructor(
     private createProductService: ProductService,

@@ -8,5 +8,6 @@ namespace ECommerceServer.Domain.Entities
 {
     public class ProductImageFile : FileTable
     {
+        public ICollection<Product> Products { get; set; }
     }
 }

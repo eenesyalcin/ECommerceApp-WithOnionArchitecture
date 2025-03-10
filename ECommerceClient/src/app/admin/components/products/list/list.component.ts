@@ -7,6 +7,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { AlertifyMessageType, AlertifyPosition, AlertifyService } from '../../../../services/admin/alertify.service';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import { DeleteDirective } from '../../../../directives/admin/delete.directive';
+import { OpenDialogService } from '../../../../services/common/open-dialog.service';
+import { SelectProductImageDialogComponent } from '../../../../dialogs/select-product-image-dialog/select-product-image-dialog.component';
 
 @Component({
   selector: 'app-list',
@@ -15,7 +17,7 @@ import { DeleteDirective } from '../../../../directives/admin/delete.directive';
   styleUrl: './list.component.scss'
 })
 export class ListComponent extends BaseComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'stock', 'price', 'createdDate', 'updatedDate', 'update', "delete"];
+  displayedColumns: string[] = ['name', 'stock', 'price', 'createdDate', 'updatedDate', 'photos', 'update', "delete"];
   dataSource: MatTableDataSource<ListProduct> = null;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -23,6 +25,7 @@ export class ListComponent extends BaseComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private alertifyService: AlertifyService,
+    private dialogService: OpenDialogService,
     spinner: NgxSpinnerService
   ){
     super(spinner);
@@ -45,6 +48,16 @@ export class ListComponent extends BaseComponent implements OnInit {
   //   const row = img.parentElement.closest('tr'); // Doğru <tr> seçimi
   //   $(row).fadeOut(2000);
   // }
+
+  addProductImages(id: string){
+    this.dialogService.openDialog({
+      componentType: SelectProductImageDialogComponent,
+      data: id,
+      options: {
+        width: "1400px"
+      }
+    })
+  }
 
   async pageChanged(){
     await this.getProducts();
