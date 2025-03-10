@@ -1,4 +1,5 @@
 ﻿
+using ECommerceServer.Application;
 using ECommerceServer.Application.Validators.Products;
 using ECommerceServer.Infrastructure;
 using ECommerceServer.Infrastructure.Filters;
@@ -19,6 +20,7 @@ namespace ECommerceServer.API
             // Add services to the container.
             builder.Services.AddPersistanceServices();
             builder.Services.AddInfrastructureServices();
+            builder.Services.AddApplicationServices();
 
             //builder.Services.AddStorage(StorageType.Azure);
             //builder.Services.AddStorage<LocalStorage>();

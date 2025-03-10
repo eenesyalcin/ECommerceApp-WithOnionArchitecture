@@ -1,9 +1,12 @@
 ﻿using System.Net;
 using ECommerceServer.Application.Abstractions.Storage;
+using ECommerceServer.Application.Features.Commands.CreateProduct;
+using ECommerceServer.Application.Features.Queries.GetAllProduct;
 using ECommerceServer.Application.Repositories;
 using ECommerceServer.Application.RequestParameters;
 using ECommerceServer.Application.ViewModels.Products;
 using ECommerceServer.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +29,9 @@ namespace ECommerceServer.API.Controllers
         readonly private IStorageService _storageService;
         readonly private IConfiguration _configuration;
 
+
+        readonly private IMediator _mediator;
+
         public TestController(
             IProductReadRepository productReadRepository, 
             IProductWriteRepository productWriteRepository,
@@ -36,7 +42,8 @@ namespace ECommerceServer.API.Controllers
             IInvoiceFileReadRepository invoiceFileReadRepository,
             IInvoiceFileWriteRepository invoiceFileWriteRepository,
             IStorageService storageService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IMediator mediator)
         {
             _productReadRepository = productReadRepository;
             _productWriteRepository = productWriteRepository;
@@ -48,27 +55,15 @@ namespace ECommerceServer.API.Controllers
             _invoiceFileWriteRepository = invoiceFileWriteRepository;
             _storageService = storageService;
             _configuration = configuration;
+            _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery]Pagination pagination)
+        public async Task<IActionResult> Get([FromQuery] GetAllProductQueryRequest getAllProductQueryRequest)
         {
-            var totalCount = _productReadRepository.GetAll(false).Count();
-            var products = _productReadRepository.GetAll(false).Skip(pagination.Page * pagination.Size).Take(pagination.Size).Select(p => new
-            {
-                p.Id,
-                p.Name,
-                p.Stock,
-                p.Price,
-                p.CreatedDate,
-                p.UpdatedDate
-            }).ToList();
-
-            return Ok(new
-            {
-                totalCount,
-                products
-            });
+            // MediatR kütüphanesi aracılığı ile getAllProductQueryRequest'i Handler kısmına gönderiliyor ve GetAllProductQueryResponse türünde bir değer dönüyor. Dönen sonucu da return ediyoruz.
+            GetAllProductQueryResponse getAllProductQueryResponse = await _mediator.Send(getAllProductQueryRequest);
+            return Ok(getAllProductQueryResponse);
         }
 
         [HttpGet("{id}")]
@@ -78,15 +73,9 @@ namespace ECommerceServer.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(VM_Create_Product model)
+        public async Task<IActionResult> Post(CreateProductCommandRequest createProductCommandRequest)
         {
-            await _productWriteRepository.AddAsync(new()
-            {
-                Name = model.Name,
-                Price = model.Price,
-                Stock = model.Stock,
-            });
-            await _productWriteRepository.SaveAsync();
+            CreateProductCommandResponse createProductCommandResponse =  await _mediator.Send(createProductCommandRequest);
             return Ok((int)HttpStatusCode.Created);
         }
 
