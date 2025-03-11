@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ECommerceServer.Application.Repositories;
+using ECommerceServer.Domain.Entities.Identity;
 using ECommerceServer.Persistence.Contexts;
 using ECommerceServer.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,15 @@ namespace ECommerceServer.Persistence
             // DbContext'e doğru connection string'i geçiriyoruz
             services.AddDbContext<ECommerceServerDbContext>(options =>
                 options.UseSqlServer(connectionString));
+
+            services.AddIdentity<AppUser, AppRole>(options =>
+            {
+                options.Password.RequiredLength = 3;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+            }).AddEntityFrameworkStores<ECommerceServerDbContext>();
 
             services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();

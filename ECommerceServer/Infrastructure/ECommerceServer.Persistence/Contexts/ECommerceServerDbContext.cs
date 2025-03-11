@@ -6,12 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using ECommerceServer.Domain.Entities;
 using ECommerceServer.Domain.Entities.Common;
+using ECommerceServer.Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace ECommerceServer.Persistence.Contexts
 {
-    public class ECommerceServerDbContext : DbContext
+    public class ECommerceServerDbContext : IdentityDbContext<AppUser, AppRole, string>
     {
         public ECommerceServerDbContext(DbContextOptions options) : base(options)
         {
