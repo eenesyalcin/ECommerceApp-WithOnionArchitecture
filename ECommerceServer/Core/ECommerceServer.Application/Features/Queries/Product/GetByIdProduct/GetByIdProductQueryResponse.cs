@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ECommerceServer.Domain.Entities;
 
-namespace ECommerceServer.Application.ViewModels.Products
+namespace ECommerceServer.Application.Features.Queries.Product.GetByIdProduct
 {
-    public class VM_Update_Product
+    public class GetByIdProductQueryResponse
     {
-        public string Id { get; set; }
         public string Name { get; set; }
         public int Stock { get; set; }
         public float Price { get; set; }

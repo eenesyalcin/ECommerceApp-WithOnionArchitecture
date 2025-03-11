@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ECommerceServer.Application.ViewModels.Products;
 using MediatR;
 
-namespace ECommerceServer.Application.Features.Commands.CreateProduct
+namespace ECommerceServer.Application.Features.Commands.Product.UpdateProduct
 {
-    public class CreateProductCommandRequest : IRequest<CreateProductCommandResponse>
+    public class UpdateProductCommandRequest : IRequest<UpdateProductCommandResponse>
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public int Stock { get; set; }
         public float Price { get; set; }

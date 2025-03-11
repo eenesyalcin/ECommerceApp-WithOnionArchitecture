@@ -4,21 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ECommerceServer.Application.Repositories;
-using ECommerceServer.Domain.Entities;
 using MediatR;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
-namespace ECommerceServer.Application.Features.Commands.CreateProduct
+namespace ECommerceServer.Application.Features.Commands.Product.CreateProduct
 {
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommandRequest, CreateProductCommandResponse>
     {
-        readonly IProductReadRepository _productReadRepository;
         readonly IProductWriteRepository _productWriteRepository;
 
-        public CreateProductCommandHandler(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository)
+        public CreateProductCommandHandler(IProductWriteRepository productWriteRepository)
         {
-            _productReadRepository = productReadRepository;
             _productWriteRepository = productWriteRepository;
         }
 

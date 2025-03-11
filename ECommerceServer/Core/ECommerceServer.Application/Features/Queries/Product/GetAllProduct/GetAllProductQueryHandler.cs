@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ECommerceServer.Application.Repositories;
-using ECommerceServer.Application.RequestParameters;
 using MediatR;
 
-namespace ECommerceServer.Application.Features.Queries.GetAllProduct
+namespace ECommerceServer.Application.Features.Queries.Product.GetAllProduct
 {
     // Burada hangi request sınıfına karşılık, hangi response nesnesini döndüreceğini belirtiyoruz.
     public class GetAllProductQueryHandler : IRequestHandler<GetAllProductQueryRequest, GetAllProductQueryResponse>

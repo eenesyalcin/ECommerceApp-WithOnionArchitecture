@@ -20,7 +20,7 @@ namespace ECommerceServer.Infrastructure.Services.Storage
         public string StorageName { get => _storage.GetType().Name; }
 
         public async Task DeleteAsync(string pathOrContainerName, string fileName)
-            => _storage.DeleteAsync(pathOrContainerName, fileName);
+            => await _storage.DeleteAsync(pathOrContainerName, fileName);
 
         public List<string> GetFiles(string pathOrContainerName)
             => _storage.GetFiles(pathOrContainerName);

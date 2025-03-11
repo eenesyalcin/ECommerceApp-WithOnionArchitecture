@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerceServer.Application.Features.Commands.CreateProduct
+namespace ECommerceServer.Application.Features.Commands.Product.RemoveProduct
 {
-    public class CreateProductCommandResponse
+    public class RemoveProductCommandResponse
     {
     }
 }
