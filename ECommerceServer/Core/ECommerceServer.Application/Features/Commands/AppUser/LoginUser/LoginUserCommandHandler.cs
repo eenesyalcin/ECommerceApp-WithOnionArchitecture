@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ECommerceServer.Application.Abstractions.Token;
+using ECommerceServer.Application.DTOs;
 using ECommerceServer.Application.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -14,11 +16,16 @@ namespace ECommerceServer.Application.Features.Commands.AppUser.LoginUser
     {
         readonly UserManager<U.AppUser> _userManager;
         readonly SignInManager<U.AppUser> _signInManager;
+        readonly ITokenHandler _tokenHandler;
 
-        public LoginUserCommandHandler(UserManager<U.AppUser> userManager, SignInManager<U.AppUser> signInManager)
+        public LoginUserCommandHandler(
+            UserManager<U.AppUser> userManager, 
+            SignInManager<U.AppUser> signInManager,
+            ITokenHandler tokenHandler)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _tokenHandler = tokenHandler;
         }
 
         public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
@@ -31,17 +38,27 @@ namespace ECommerceServer.Application.Features.Commands.AppUser.LoginUser
 
             if (user == null)
             {
-                throw new NotFoundUserException("Kullanıcı adı veya şifre hatalı!");
+                throw new NotFoundUserException();
             }
 
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
 
             if (result.Succeeded)  // Authentication başarılı olursa bu if bloğuna girer.
             {
-                // Yetkileri belirlememiz gerekiyor, yani Authorization işlemlerini yapmamız gerekiyor.
+                Token token = _tokenHandler.CreateAccessToken(5);
+                return new LoginUserSuccessCommandResponse()
+                {
+                    Token = token,
+                };
             }
-
-            return new();
+            //else
+            //{
+            //    return new LoginUserErrorCommandResponse()
+            //    {
+            //        Message = "ERİŞİM YETKİSİ YOK!"
+            //    };
+            //}
+            throw new AuthenticationErrorException();
         }
     }
 }

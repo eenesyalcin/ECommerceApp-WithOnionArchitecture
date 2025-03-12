@@ -1,4 +1,5 @@
 ﻿
+using System.Text;
 using ECommerceServer.Application;
 using ECommerceServer.Application.Validators.Products;
 using ECommerceServer.Infrastructure;
@@ -8,6 +9,8 @@ using ECommerceServer.Infrastructure.Services.Storage.Local;
 using ECommerceServer.Persistence;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ECommerceServer.API
 {
@@ -56,6 +59,21 @@ namespace ECommerceServer.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer("Admin", options =>
+            {
+                options.TokenValidationParameters = new()
+                {
+                    ValidateAudience = true,            // Oluşturulacak token değerini kimlerin, hangi sitelerin kullanacağını belirlediğimiz değerdir. ==> www.ornek.com 
+                    ValidateIssuer = true,              // Oluşturulacak token değerini kimin dağıttığını ifade eden değerdir.                           ==> www.myapi.com
+                    ValidateLifetime = true,            // Oluşturulan token değerinin süresini kontrol edecek olan doğrulamadır.
+                    ValidateIssuerSigningKey = true,    // Üretilecek token değerinin uygulamamıza ait bir değer olduğunu ifade eden security key verisinin doğrulanmasıdır.
+
+                    ValidAudience = builder.Configuration["Token:Audience"],
+                    ValidIssuer = builder.Configuration["Token:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"]))
+                };
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -69,6 +87,7 @@ namespace ECommerceServer.API
             app.UseCors("AllowAll");
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

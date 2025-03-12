@@ -12,6 +12,7 @@ using ECommerceServer.Application.Repositories;
 using ECommerceServer.Application.RequestParameters;
 using ECommerceServer.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,7 @@ namespace ECommerceServer.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Admin")]
     public class TestController : ControllerBase
     {
         readonly private IMediator _mediator;
