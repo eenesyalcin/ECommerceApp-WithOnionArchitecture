@@ -12,6 +12,7 @@ export const routes: Routes = [
       { path: "products", loadComponent: () => import('./ui/components/products/products.component').then(m => m.ProductsComponent) },
       { path: "baskets", loadComponent: () => import('./ui/components/baskets/baskets.component').then(m => m.BasketsComponent) },
       { path: "register", loadComponent: () => import('./ui/components/register/register.component').then(m => m.RegisterComponent)},
+      { path: "login", loadComponent: () => import('./ui/components/login/login.component').then(m => m.LoginComponent)},
       { path: "", redirectTo: "home", pathMatch: "full" } // UI içindeki boş path home’a yönlendirilmeli
     ]
   },

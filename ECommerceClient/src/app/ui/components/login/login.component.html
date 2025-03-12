@@ -1,0 +1,38 @@
+<div class="row mt-5">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label for="username">Kullanıcı Adı</label>
+            <input 
+                #txtUserNameOrEmail
+                type="text" 
+                class="form-control" 
+                id="username"
+                placeholder="Kullanıcı Adı & Email">
+            <div class="form-text invalid-feedback">
+                <small>---</small>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Şifre</label>
+            <input 
+                #txtPassword
+                type="password" 
+                class="form-control" 
+                id="password"
+                placeholder="Şifre">
+            <div class="form-text invalid-feedback">
+                <small>---</small>
+            </div>
+        </div>
+
+        <button 
+            type="submit" 
+            class="btn btn-primary"
+            (click)="login(txtUserNameOrEmail.value, txtPassword.value)">
+            Giriş Yap
+        </button>
+    </div>
+    <div class="col-md-4"></div>
+</div>
